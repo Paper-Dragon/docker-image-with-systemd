@@ -20,7 +20,7 @@ RUN case $(. /etc/os-release; echo "$ID") in \
           test -e /bin/systemctl || ln -sf /usr/bin/systemctl /bin/systemctl \
     ;; \
       centos) \
-          yum makecache fast && yum install -y \
+          yum makecache && yum install -y \
               which \
               curl \
               sudo \
