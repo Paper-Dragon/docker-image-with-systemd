@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       base_image:
-        description: 'Base image for Dockerfile (e.g., ubuntu:22.04)'
+        description: 'Base image for Dockerfile (e.g., ubuntu)'
         required: true
-        default: 'ubuntu:22.04'
+        default: 'ubuntu'
       docker_tag:
-        description: 'Tag for the Docker image'
+        description: 'Tag for the Base Docker image'
         required: true
-        default: 'latest'
+        default: '22.04'
 
 jobs:
   build:
