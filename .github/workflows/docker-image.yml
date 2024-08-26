@@ -1,0 +1,34 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_image:
+        description: 'Base image for Dockerfile (e.g., ubuntu:22.04)'
+        required: true
+        default: 'ubuntu:22.04'
+      docker_tag:
+        description: 'Tag for the Docker image'
+        required: true
+        default: 'latest'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
+      run: |
+        docker build --push --build-arg BASE_IMAGE=${{ github.event.inputs.base_image }} -t ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.base_image }}-systemd:${{ github.event.inputs.docker_tag }}-systemctl-replacement .
