@@ -32,4 +32,4 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build --push --build-arg BASE_IMAGE=${{ github.event.inputs.base_image }} -t ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.base_image }}-systemd:${{ github.event.inputs.docker_tag }}-systemctl-replacement -f ./systemctl-replacement/Dockerfile ./systemctl-replacement
+        docker build --push --build-arg BASE_IMAGE=${{ github.event.inputs.base_image }}:${{ github.event.inputs.docker_tag }} -t ${{ secrets.DOCKER_USERNAME }}/${{ github.event.inputs.base_image }}-systemd:${{ github.event.inputs.docker_tag }}-systemctl-replacement -f ./systemctl-replacement/Dockerfile ./systemctl-replacement
