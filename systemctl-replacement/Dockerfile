@@ -19,14 +19,13 @@ RUN case $(. /etc/os-release; echo "$ID") in \
           chmod +x /usr/bin/systemctl && \
           test -e /bin/systemctl || ln -sf /usr/bin/systemctl /bin/systemctl \
     ;; \
-      centos) \
+      rocky) \
           yum makecache && yum install -y \
               which \
               curl \
               sudo \
               systemd \
               python2 \
-              xxd \
               lsof && \
           yum clean all && \
           curl -L -k https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -o /usr/bin/systemctl && \
