@@ -107,7 +107,7 @@ COPY --from=0 / /
 #
 # The 'container' environment variable tells systemd that it's running inside a
 # Docker container environment.
-ENV container docker
+ENV container=docker
 
 # A different stop signal is required, so systemd will initiate a shutdown when
 # running 'docker stop <container>'.
