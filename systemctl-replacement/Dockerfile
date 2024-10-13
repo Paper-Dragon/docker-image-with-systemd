@@ -36,9 +36,9 @@ RUN case $(. /etc/os-release; echo "$ID") in \
     ;; \
     esac
 
-ENV TERM xterm
-ENV TZ Asia/Shanghai
-ENV DEBIAN_FRONTEND noninteractive
+ENV TERM=xterm
+ENV TZ=Asia/Shanghai
+ENV DEBIAN_FRONTEND=noninteractive
 
 USER root
 WORKDIR /app
