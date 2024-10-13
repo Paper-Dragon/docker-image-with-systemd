@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=ubuntu:22.04
 
 FROM ${BASE_IMAGE}
-LABEL org.opencontainers.image.authors="Paper-Dragon <2678885646@qq.com>"
+LABEL org.opencontainers.image.authors="<PaperDragon 2678885646@qq.com>"
 
 RUN case $(. /etc/os-release; echo "$ID") in \
       ubuntu|debian) \

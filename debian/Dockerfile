@@ -8,6 +8,7 @@
 ARG  TAG=10
 
 FROM debian:${TAG}
+LABEL org.opencontainers.image.authors="<PaperDragon 2678885646@qq.com>"
 
 # Configure the debconf frontend.
 #
