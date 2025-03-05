@@ -5,9 +5,7 @@ LABEL org.opencontainers.image.authors="<PaperDragon 2678885646@qq.com>"
 ENV container=docker
 
 # set mirror if centos7
-RUN curl -sSL https://www.geekery.cn/sh/system/clean_and_set_mirror_centos7.sh | bash
-
-RUN yum repolist; yum clean all
+RUN curl -sSL https://www.geekery.cn/sh/LinuxCTS/os/yum/clean_and_set_mirror_centos7.sh | bash
 
 RUN yum -y swap -- remove systemd-container systemd-container-libs -- install systemd systemd-libs dbus
 

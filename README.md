@@ -4,13 +4,9 @@
 >
 > docker images add systemd process management tools.
 
-## run at Linux
 
-- debian
-- centos
-- ubuntu
 
-### debian
+## debian
 
 description:
 if u want debian version 10, set TAG=10.
@@ -26,28 +22,49 @@ docker run -d -it                       \
     jockerdragon/debian-systemd:10
 ```
 
-### centos
+## centos
 
+#### cgroup v1
 ```bash
-# default centos version: 7
-docker build -t jockerdragon/centos-systemd:7 \
+docker build -t jockerdragon/centos-systemd:7-cgroupv1 \
     --build-arg TAG=7 \
-    -f centos/Dockerfile ./centos
+    -f centos/cgroupv1/Dockerfile ./centos/cgroupv1
     
 docker run -it --rm \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-  jockerdragon/centos-systemd:7
+  jockerdragon/centos-systemd:7-cgroupv1
 
 docker run -it --rm \
   --privileged \
-  jockerdragon/centos-systemd:7
+  jockerdragon/centos-systemd:7-cgroupv1
 ```
 
-### rockylinux
+#### cgroup v2
+
+build centos image (cgroup v2)
+
+```bash
+docker build -t jockerdragon/centos-systemd:7-cgroupv2 \
+    --build-arg TAG=7 \
+    -f centos/cgroupv2/Dockerfile ./centos/cgroupv2
+```
+
+
+run centos image (cgroup v2)
+
+```bash
+docker run -it --rm \
+  --privileged \
+  jockerdragon/centos-systemd:7-cgroupv2
+
+```
+
+
+## rockylinux
 
 same as centos
 
-### ubuntu
+## ubuntu
 
 ```bash
 # default ubuntu version: 22.10
