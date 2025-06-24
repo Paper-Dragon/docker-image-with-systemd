@@ -1,99 +1,132 @@
-# docker-image-with-systemd
->
-> description:
->
-> docker images add systemd process management tools.
+# 支持Systemd的Docker镜像
+
+提供支持 systemd 进程管理的 Docker 镜像，用于需要 systemd 管理的服务容器化场景。
 
 
+## 支持的发行版
 
-## debian
+### Debian
 
-description:
-if u want debian version 10, set TAG=10.
+构建镜像
 
 ```bash
-# default debian version: 10
-docker build -t jockerdragon/debian-systemd:10 \
-    --build-arg TAG=10 \
-    -f debian/Dockerfile .
-docker run -d -it                       \
-    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    --cap-add SYS_ADMIN                 \
-    jockerdragon/debian-systemd:10
+# 构建 Debian 11 镜像 (可选 10, 11, 12等)
+export TARGET_OS_VERSION=11
+docker build -t jockerdragon/docker-systemd:debian-${TARGET_OS_VERSION:-10} \
+    --build-arg TAG=${TARGET_OS_VERSION:-10} \
+    -f debian/Dockerfile ./debian
 ```
 
-## centos
+运行容器
+
+```bash
+docker run -d -it \
+    --privileged \
+    jockerdragon/docker-systemd:debian-${TARGET_OS_VERSION:-10}
+```
+
+### CentOS
 
 #### cgroup v1
-```bash
-docker build -t jockerdragon/centos-systemd:7-cgroupv1 \
-    --build-arg TAG=7 \
-    -f centos/cgroupv1/Dockerfile ./centos/cgroupv1
-    
-docker run -it --rm \
-  -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-  jockerdragon/centos-systemd:7-cgroupv1
 
-docker run -it --rm \
+构建镜像
+
+```bash
+# 构建 CentOS 镜像 (已经在7 版本中测试通过)
+export TARGET_OS_VERSION=7
+docker build -t jockerdragon/docker-systemd:centos-${TARGET_OS_VERSION:-7}-cgroupv1 \
+    --build-arg TAG=${TARGET_OS_VERSION:-7} \
+    -f centos/cgroupv1/Dockerfile ./centos/cgroupv1
+```
+
+运行容器
+
+```bash
+export TARGET_OS_VERSION=7
+docker run -it -d \
   --privileged \
-  jockerdragon/centos-systemd:7-cgroupv1
+  jockerdragon/docker-systemd:centos-${TARGET_OS_VERSION:-7}-cgroupv1
 ```
 
 #### cgroup v2
 
-build centos image (cgroup v2)
-
 ```bash
-docker build -t jockerdragon/centos-systemd:7-cgroupv2 \
-    --build-arg TAG=7 \
+# 构建 CentOS 镜像 (已经在7 版本中测试通过)
+export TARGET_OS_VERSION=7
+docker build -t jockerdragon/docker-systemd:centos-${TARGET_OS_VERSION:-7}-cgroupv2 \
+    --build-arg TAG=${TARGET_OS_VERSION:-7} \
     -f centos/cgroupv2/Dockerfile ./centos/cgroupv2
 ```
 
-
-run centos image (cgroup v2)
+运行容器
 
 ```bash
-docker run -it --rm \
+export TARGET_OS_VERSION=7
+docker run -it -d \
   --privileged \
-  jockerdragon/centos-systemd:7-cgroupv2
-
+  jockerdragon/docker-systemd:centos-${TARGET_OS_VERSION:-7}-cgroupv2
 ```
 
-
-## rockylinux
-
-same as centos
-
-## ubuntu
+### RockyLinux
 
 ```bash
-# default ubuntu version: 22.10
-docker build -t jockerdragon/ubuntu-systemd:23.04 \
-    --build-arg TAG=23.04 \
+# 构建 rockylinux 镜像 (可选 - 8 版本中测试通过)
+export TARGET_OS_VERSION=8
+docker build -t jockerdragon/docker-systemd:rockylinux-${TARGET_OS_VERSION:-8} \
+    --build-arg TAG=${TARGET_OS_VERSION:-8} \
+    -f rockylinux/Dockerfile ./rockylinux
+```
+
+运行容器
+
+```bash
+export TARGET_OS_VERSION=8
+docker run -it -d \
+  --privileged \
+  jockerdragon/docker-systemd:rockylinux-${TARGET_OS_VERSION:-8}
+```
+
+### Ubuntu
+
+构建镜像
+
+```bash
+# 构建 Ubuntu 24.04 镜像 (请选择双数版本，如 20.04, 22.04, 24.04, 26.04 等)
+export TARGET_OS_VERSION=24.04
+docker build -t jockerdragon/docker-systemd:ubuntu-${TARGET_OS_VERSION:-24.04} \
+    --build-arg TAG=${TARGET_OS_VERSION:-24.04} \
     -f ubuntu/Dockerfile ./ubuntu
-docker run -d -it                       \
-    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    --cap-add SYS_ADMIN                 \
-    jockerdragon/ubuntu-systemd:23.04
 ```
 
-## run at other os
-
-### Mac
-
-As the image mounts the systemd cgroup into the container, the host needs to have it mounted already. However, boot2docker doesn't have systemd installed and therefore this cgroup isn't available.
-To get the cgroup mounted in the Docker VM, you can login into the VM by running docker-machine ssh and run the following code to apply the patch:
+运行容器
 
 ```bash
-
-sudo -s
-cat >> /var/lib/boot2docker/bootsync.sh <<EOF
-mkdir /sys/fs/cgroup/systemd
-mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
-EOF
-exit
+export TARGET_OS_VERSION=24.04
+docker run -d -it \
+    --privileged \
+    jockerdragon/docker-systemd:ubuntu-${TARGET_OS_VERSION:-24.04}
 ```
 
-## Thanks
+## 在其他系统运行
 
-- [asg1612/docker-debian-systemd](https://github.com/asg1612/docker-debian-systemd)
+### macOS
+
+由于 macOS 上的 Docker Desktop 使用虚拟机运行容器，需要额外配置 cgroup 支持：
+
+启用 cgroup 挂载（适用于 Docker Desktop 4.3+）：
+
+```bash
+# 创建或编辑 ~/.docker/daemon.json
+{
+  "features": {
+    "cgroupv2": true
+  }
+}
+```
+
+重启 Docker Desktop 使配置生效
+
+## 注意事项
+
+1. 可以通过添加 `--cap-add SYS_ADMIN` 能力不需要添加 `--privileged` 特权模式以提高安全性，这种方法还需要挂载 cgroup 文件系统：`-v /sys/fs/cgroup:/sys/fs/cgroup:ro` 。
+2. 权限充足情况下可以使用 `--privileged` 特权模式

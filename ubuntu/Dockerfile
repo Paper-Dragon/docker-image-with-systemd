@@ -13,17 +13,13 @@ ENV container=docker
 #    -not -name '*systemd-user-sessions*' \
 #    -exec rm \{} \;
 
-# For china mainland settings ,change mirrorlist to china mainline
-# RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
-
 RUN apt-get update && \
-    apt-get install -y systemd systemd-sysv && \
+    apt-get install -y systemd && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN systemctl set-default multi-user.target
 
 STOPSIGNAL SIGRTMIN+3
 
-CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
+CMD ["/lib/systemd/systemd"]
