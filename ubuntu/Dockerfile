@@ -20,6 +20,8 @@ RUN apt-get update && \
 
 RUN systemctl set-default multi-user.target
 
+RUN systemctl mask proc-sys-fs-binfmt_misc.automount || true
+
 STOPSIGNAL SIGRTMIN+3
 
 CMD ["/lib/systemd/systemd"]
