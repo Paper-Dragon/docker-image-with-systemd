@@ -107,6 +107,47 @@ docker run -d -it \
     jockerdragon/docker-systemd:ubuntu-${TARGET_OS_VERSION:-24.04}
 ```
 
+### Ubuntu GNOME VNC 桌面
+
+该镜像位于子模块 `ubuntu-gnome-vnc`，基于 `jockerdragon/docker-systemd:ubuntu-24.04` 构建完整 Ubuntu GNOME 桌面环境，并通过 VNC/noVNC 访问。
+
+首次拉取仓库后先初始化子模块：
+
+```bash
+git submodule update --init --recursive
+```
+
+构建镜像
+
+```bash
+docker build -t jockerdragon/docker-systemd:ubuntu-gnome-vnc-24.04 ./ubuntu-gnome-vnc
+```
+
+运行容器
+
+```bash
+docker run -d \
+    --privileged \
+    --name ubuntu-gnome-vnc \
+    --shm-size=2g \
+    -p 6080:6080 \
+    -p 5901:5901 \
+    -e VNC_PASSWORD=yourpassword \
+    jockerdragon/docker-systemd:ubuntu-gnome-vnc-24.04
+```
+
+浏览器打开 `https://localhost:6080` 访问 noVNC；提示证书不受信任时选择继续访问，然后输入 `VNC_PASSWORD` 设置的密码。也可以通过 VNC 客户端连接 `localhost:5901`。
+
+可用环境变量：
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `VNC_PASSWORD` | `password` | VNC/noVNC 登录密码 |
+| `VNC_RESOLUTION` | `1920x1080` | 桌面分辨率 |
+| `VNC_DEPTH` | `24` | 色深 |
+| `VNC_PORT` | `5901` | VNC 端口 |
+| `NOVNC_PORT` | `6080` | noVNC 端口 |
+
 ## 在其他系统运行
 
 ### macOS

@@ -1,0 +1,3 @@
+[submodule "ubuntu-gnome-vnc"]
+	path = ubuntu-gnome-vnc
+	url = https://github.com/itgpt/desktop-docker
